@@ -1,7 +1,34 @@
+function parseDurationToSeconds(duration) {
+
+    if (!duration) return 0;
+
+    const parts = duration.split(":").map(Number);
+
+    const hours = parts[0] || 0;
+    const minutes = parts[1] || 0;
+    const seconds = parts[2] || 0;
+
+    return hours * 3600 + minutes * 60 + seconds;
+}
+
+function secondsToDuration(seconds) {
+
+    const h = Math.floor(seconds / 3600);
+    seconds %= 3600;
+
+    const m = Math.floor(seconds / 60);
+    const s = Math.floor(seconds % 60);
+
+    return `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+}
+
+
 /* =========================
    Compute Stats
 ========================= */
 function computeStats(tradesArray) {
+    let totalDuration = 0;
+    let durationCount = 0;
     let totalPnl = 0;
     let wins = 0;
     let losses = 0;
@@ -31,6 +58,16 @@ function computeStats(tradesArray) {
         if (t.signal) {
             if (t.signal.includes("long")) longTrades++;
             if (t.signal.includes("short")) shortTrades++;
+        }
+
+        if (t.duration) {
+
+            const seconds = parseDurationToSeconds(t.duration);
+
+            if (seconds > 0) {
+                totalDuration += seconds;
+                durationCount++;
+            }
         }
 
 
@@ -87,6 +124,14 @@ function computeStats(tradesArray) {
         if (downsideDev !== 0) sortino = (mean/downsideDev * Math.sqrt(returns.length)).toFixed(2);
     }
 
+    let avgDuration = "-";
+    if (durationCount > 0) {
+        const avgSeconds = totalDuration / durationCount;
+        avgDuration = secondsToDuration(avgSeconds);
+    }
+
+
+
     return {
         totalPnl,
         wins,
@@ -106,7 +151,8 @@ function computeStats(tradesArray) {
         maxDrawdown,
         maxRunup,
         longTrades,
-        shortTrades
+        shortTrades,
+        avgDuration
     };
 }
 
@@ -128,9 +174,12 @@ function generateMetrics() {
     // Collect all trade P&L data
     const signalIndex = header.indexOf("Signal");
 
+    const durationIndex = header.indexOf("Trade Duration");
+
     const tradesData = fullRows.slice(1).map(row => ({
         pnl: parseFloat(row[pnlIndex]) || 0,
-        signal: (row[signalIndex] || "").toLowerCase()
+        signal: (row[signalIndex] || "").toLowerCase(),
+        duration: row[durationIndex]
     }));
 
     // Compute stats using computeStats()
@@ -214,6 +263,11 @@ function generateMetrics() {
                     ${stats.longTrades} / ${stats.shortTrades} 
                     (${stats.totalTrades ? Math.round(stats.longTrades / stats.totalTrades * 100) : 0}% Long)
                 </div>
+            </div>
+
+            <div class="metric-card">
+                <div class="metric-title">Avg Trade Duration</div>
+                <div class="metric-value">${stats.avgDuration}</div>
             </div>
 
 
