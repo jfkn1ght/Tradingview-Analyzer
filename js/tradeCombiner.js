@@ -10,7 +10,7 @@ function combineTrades(rows) {
     const signalIndex = header.indexOf("Signal");
     const pnlIndex = header.indexOf("Net P&L USD");
     const pnlPctIndex = header.indexOf("Net P&L %");
-    const posQtyIndex = header.indexOf("Position size (qty)");
+    const posQtyIndex = header.indexOf("Size (qty)");
     const posValueIndex = header.indexOf("Position size (value)");
     const favUsdIndex = header.indexOf("Favorable excursion USD");
     const favPctIndex = header.indexOf("Favorable excursion %");
@@ -64,7 +64,7 @@ function combineTrades(rows) {
 
     const tradeArray = Object.values(trades).sort((a,b) => new Date(a.enter)-new Date(b.enter));
     const newRows = [[
-        "Trade #","Signal","Enter","Exit","Trade Duration","Position size (qty)","Position size (value)",
+        "Trade #","Signal","Enter","Exit","Trade Duration","Size (qty)","Position size (value)",
         "Net P&L USD","Net P&L %","Favorable excursion USD","Favorable excursion %","Adverse excursion USD","Adverse excursion %",
         "Cumulative P&L USD","Cumulative P&L %"
     ]];
