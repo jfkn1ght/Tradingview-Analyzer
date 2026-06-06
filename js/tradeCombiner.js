@@ -4,14 +4,14 @@
 function combineTrades(rows) {
     const header = rows[0];
 
-    const tradeIndex = header.indexOf("Trade #");
+    const tradeIndex = header.indexOf("Trade number");
     const typeIndex = header.indexOf("Type");
     const dateIndex = header.indexOf("Date and time");
-    const signalIndex = header.indexOf("Signal");
-    const pnlIndex = header.indexOf("Net P&L USD");
-    const pnlPctIndex = header.indexOf("Net P&L %");
+    const signalIndex = header.indexOf("Signal");   
+    const pnlIndex = header.indexOf("Net PnL USD");
+    const pnlPctIndex = header.indexOf("Net PnL %");
     const posQtyIndex = header.indexOf("Size (qty)");
-    const posValueIndex = header.indexOf("Position size (value)");
+    const posValueIndex = header.indexOf("Size (value)");
     const favUsdIndex = header.indexOf("Favorable excursion USD");
     const favPctIndex = header.indexOf("Favorable excursion %");
     const advUsdIndex = header.indexOf("Adverse excursion USD");
